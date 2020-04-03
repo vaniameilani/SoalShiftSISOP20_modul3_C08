@@ -6,6 +6,7 @@
 #include<sys/types.h>
 #include<sys/wait.h>
 
+//fungsi untuk mendapatkan file ekstensi
 string getExt(string pathName)
 	{
 	    // Finds the last persiod character of the string
