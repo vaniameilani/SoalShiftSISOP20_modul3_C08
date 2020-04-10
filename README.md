@@ -1,8 +1,8 @@
 # SoalShiftSISOP20_modul3_C08
-#### VANIA MEILANI TAQIYYAH - 05111840000045 ###
-#### IVAN ABDILLAH RAHMAN - 0511840000137 ###
+### VANIA MEILANI TAQIYYAH - 05111840000045 ###
+### IVAN ABDILLAH RAHMAN - 0511840000137 ###
 
-##### SOAL 1
+#### SOAL 1
 ```
 Poke*ZONE adalah sebuah game berbasis text terminal mirip dengan Pokemon GO.
 Ketentuan permainan sebagai berikut:
@@ -82,7 +82,7 @@ ii. Jual Item (Gunakan Thread)
 4. List item ada pada tabel dibawah.
 ```
 
-##### SOAL 2
+#### SOAL 2
 ```
 Qiqi adalah sahabat MamMam dan Kaka. Qiqi , Kaka dan MamMam sangat senang
 bermain “Rainbow six” bersama-sama , akan tetapi MamMam sangat Toxic ia selalu
@@ -159,7 +159,7 @@ gagal “Auth Failed”
 terdaftar (username dan password harus terlihat)
 ```
 
-##### SOAL 3
+#### SOAL 3
 ```
 Buatlah sebuah program dari C untuk mengkategorikan file. Program ini akan
 memindahkan file sesuai ekstensinya (tidak case sensitive. JPG dan jpg adalah
@@ -203,7 +203,7 @@ dicoba-coba sendiri untuk kemungkinan test case lainnya yang mungkin
 belum ada di soal3.zip.
 ```
 
-##### SOAL 4
+#### SOAL 4
 ```
 Norland adalah seorang penjelajah terkenal. Pada suatu malam Norland menyusuri
 jalan setapak menuju ke sebuah gua dan mendapati tiga pilar yang pada setiap
