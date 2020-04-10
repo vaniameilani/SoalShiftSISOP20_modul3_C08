@@ -263,3 +263,77 @@ Sebelum menghilang, dia menyisakan semua petunjuk tentang harta karun tersebut
 melalui tulisan dalam buku catatannya yang tersebar di penjuru dunia. "One Piece
 does exist".
 ```
+##### Penjelasan
+##### 4a
+Pada soal ini diminta untuk menampilkan hasil dari perkalian matriks, dengan ukuran matriks pertama 4x2 dan matriks kedua 2x5. Untuk hasil perkalian matriksnya akan berupa matriks berukuran 4x5. 
+
+Fungsi `runner` berfungsi untuk melakukan perkalian kedua matriks, serta menghitung jumlah thread yang digunakan.
+```
+void *runner(void *ptr) //threads
+{
+    // casting parameter to struct yay pointer
+    struct yay *data=ptr;
+    int i, sum=0;
+
+    for (i=0; i<2; i++)
+    {
+        sum += A[data->i][i] * B[i][data->j];
+    }
+    C[data->i][data->j] = sum;
+    pthread_exit(0);
+}
+```
+Menyimpan size matriks ke dalam struct untuk memudahkan proses perkalian. 
+```
+struct yay *data = (struct yay*) malloc(sizeof(struct yay));
+            data->i = i;
+            data->j = j;
+```
+Membuat thread.
+```
+pthread_create(&nay[counter],NULL,runner,data); //create thread passing it data as a parameter
+counter++;
+```
+`pthread_join` ini berfungsi untuk menunggu proses semua thread dilakukan. Setelah selesai, maka `pthread_join` ini akan mengembalikan hasil dari proses thread untuk ditampilkan.
+```
+pthread_join(nay[i], NULL);
+```
+
+`sleep` ini digunakan agar proses soal 4a tidak langsung berhenti, sehingga program pada soal 4b dapat dijalankan dan ditampilkan outputnya sebelum proses soal 4a berhenti.
+```
+sleep(20);
+```
+
+##### 4b
+Pada soal 4b ini diminta untuk menampilkan hasil penjumlahan setiap elemen matriks yang berasal dari hasil matriks di soal 4a, dengan menggunakan Shared Memory. Contoh :
+Salah satu elemen hasil matriks 4a : 24 . Maka, diminta di soal 4b hasil penjumlahannya yaitu 24+23+..+1 . 
+Penjumlahan tersebut dilakukan pada setiap elemen matriks 4a tersebut. 
+
+Fungsi ini untuk menghasilkan penjumlahan setiap elemen matriks 4a.
+```
+void *runner (void *ptr) {
+
+    struct yay* data;
+    data = (struct yay*) ptr;
+
+    int n = data->n;
+    
+    n = ((n * (n + 1)) / 2);
+    printf("%d\t", n);
+
+}
+```
+Program dibawah ini merupakan bagian dari shared memory. 
+```
+int *value;
+key_t key = 1234;
+int shmid = shmget(key, sizeof(int)*4*5, IPC_CREAT | 0666);
+value = (int *)shmat(shmid, NULL, 0);
+```
+```
+shmdt(value);
+shmctl(shmid, IPC_RMID, NULL);
+```
+
+
+
