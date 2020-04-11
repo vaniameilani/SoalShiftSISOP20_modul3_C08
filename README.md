@@ -264,6 +264,12 @@ melalui tulisan dalam buku catatannya yang tersebar di penjuru dunia. "One Piece
 does exist".
 ```
 ##### Penjelasan
+##### 3
+Soal ini diminta untuk mengkategorikan file-file yang terdapat di soal3.zip ke dalam folder yang sesuai dengan ekstensinya. Sebagai contoh apabila terdapat file1.jpg, file tersebut akan dikategorikan ke dalam folder yang bernama jpg. Contoh lain adalah jika terdapat file2.c, file akan dikategorikan ke dalam folder yang bernama c. Begitu seterusnya.
+
+Pada soal ini terdapat 3 input yang harus dilakukan, yaitu -f, * , dan -d. Pada input -f, user dapat memasukkan input file sebanyak yang diinginkan yang berisi path directory file berada. Pada input * , user akan mengkategorikan seluruh file yang terdapat di soal3.zip yang sudah diekstrak ke dalam folder sesuai dengan ekstensi file masing-masing. Sedangkan pada input -d, user hanya bisa input 1 directory saja.
+
+Program ini menggunakan library `dirent.h` yang berfungsi untuk looping pada tiap direktori dan mengecek setiap ekstensi file. Pada soal ini dibuat fungsi untuk memindahkan file ke folder cwd (current working directory) pada setiap file.
 ##### 4a
 Pada soal ini diminta untuk menampilkan hasil dari perkalian matriks, dengan ukuran matriks pertama 4x2 dan matriks kedua 2x5. Untuk hasil perkalian matriksnya akan berupa matriks berukuran 4x5. 
 
