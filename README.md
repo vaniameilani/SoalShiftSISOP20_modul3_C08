@@ -334,6 +334,32 @@ value = (int *)shmat(shmid, NULL, 0);
 shmdt(value);
 shmctl(shmid, IPC_RMID, NULL);
 ```
+##### 4c
+Soal bagian ini diminta untuk menampilkan jumlah file dan folder di direktori yang sedang dibuka. Perintah pada linux untuk menampilkan jumlah tersebut yaitu `ls | wc -l` . Perintah tersebut dibuat program pada soal ini menggunakan IPC Pipes.
 
+Bagian ini merupakan parent proses dimana menunggu inputan dari proses child. Pada dup2 pertama, bagian tersebut `store1[0]` yang artinya membaca data pada store1 untuk dieksekusi. Kemudian, baru ditulis pada dup2 kedua dan ditampilkan outputnya pada `store2`.
+```
+ close(store1[1]);
+ close(store2[0]);
+ close(store2[1]);
+
+dup2(store1[0],0); //read
+dup2(store2[1],1); 
+
+close(store1[0]);
+
+char *argv[] = {"wc","-l",NULL};
+execv("/usr/bin/wc", argv);
+```
+Bagian ini merupakan child proses. Disini menggunakan dup2 dengan membuka bagian `store1[1]` yang artinya `write`, menulis informasi / data pada `ls` . Dan, `1` berfunsgi seperti `stdout` dimana untuk menampilkan output.
+```
+close(store1[0]); //close 
+dup2(store1[1],1); //write
+
+close(store1[1]);
+
+char *argv[] = {"ls",NULL};
+execv("/bin/ls", argv);
+```
 
 
