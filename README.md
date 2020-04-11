@@ -265,11 +265,176 @@ does exist".
 ```
 ##### Penjelasan
 ##### 3
-Soal ini diminta untuk mengkategorikan file-file yang terdapat di soal3.zip ke dalam folder yang sesuai dengan ekstensinya. Sebagai contoh apabila terdapat file1.jpg, file tersebut akan dikategorikan ke dalam folder yang bernama jpg. Contoh lain adalah jika terdapat file2.c, file akan dikategorikan ke dalam folder yang bernama c. Begitu seterusnya.
+Soal ini diminta untuk mengkategorikan file-file yang terdapat di soal3.zip ke dalam folder yang sesuai dengan ekstensinya. Sebagai contoh apabila terdapat file1.jpg, file tersebut akan dikategorikan ke dalam folder yang bernama jpg. Contoh lain adalah jika terdapat file2.c, file akan dikategorikan ke dalam folder yang bernama c. Begitu seterusnya. Namun, jika terdapat file yang tidak memiliki ekstensi, file tersebut harus dikategorikan ke dalam folder yang bernama Unknown.
 
 Pada soal ini terdapat 3 input yang harus dilakukan, yaitu -f, * , dan -d. Pada input -f, user dapat memasukkan input file sebanyak yang diinginkan yang berisi path directory file berada. Pada input * , user akan mengkategorikan seluruh file yang terdapat di soal3.zip yang sudah diekstrak ke dalam folder sesuai dengan ekstensi file masing-masing. Sedangkan pada input -d, user hanya bisa input 1 directory saja.
 
 Program ini menggunakan library `dirent.h` yang berfungsi untuk looping pada tiap direktori dan mengecek setiap ekstensi file. Pada soal ini dibuat fungsi untuk memindahkan file ke folder cwd (current working directory) pada setiap file.
+
+```
+char cwd[1000];
+//mendeteksi file atau folder
+int is_regular_file(const char *path)
+{
+    struct stat path_stat;
+    stat(path, &path_stat);
+    return S_ISREG(path_stat.st_mode);
+}
+```
+Ini adalah fungsi untuk mendeteksi apakah sebuah direktori berupa file atau folder.
+
+```
+void pindahFile(char *argv){ //memindah file ke folder berekstensi atau bukan
+  
+  char string[1000];
+  strcpy(string, argv);
+  puts(string);
+  int isFile = is_regular_file(string);
+  char dot = '.'; 
+  char slash = '/';
+  char* tipe = strrchr(string, dot); 
+  char* nama = strrchr(string, slash);
+  
+  char tipeLow[100];
+  if(tipe)
+  {
+    if((tipe[strlen(tipe)-1] >= 'a' && tipe[strlen(tipe)-1] <= 'z') || (tipe[strlen(tipe)-1] >= 'A' && tipe[strlen(tipe)-1] <= 'Z'))
+    {
+      strcpy(tipeLow, tipe);
+      for(int i = 0; tipeLow[i]; i++){
+        tipeLow[i] = tolower(tipeLow[i]);
+      }
+    }
+    else {
+      strcpy(tipeLow, tipe);
+    }
+  }
+  else
+  {
+    if(!isFile){
+      printf("ini adalah folder, salah argumen\n");
+      return;
+    }
+    else
+    {
+      strcpy(tipeLow, " Unknown"); //bikin folder untuk tanpa ekstensi
+    }
+  }
+    mkdir((tipeLow + 1), 0777); //bikin folder untuk file berekstensi
+
+    size_t len = 0 ;
+    char a[1000] ; //res
+    strcpy(a, argv);
+    char b[1000] ; //des
+    strcpy(b, cwd);
+    strcat(b, "/");
+    strcat(b, tipeLow+1);
+    strcat(b, nama);
+    printf("a = %s\n", a);
+    printf("b = %s\n", b);
+    rename(a, b);
+    remove(a);
+}
+```
+Ini adalah fungsi untuk memindah file ke dalam folder yang sesuai dengan ekstensi filenya, juga terdapat permisalan jika file tidak berekstensi, file dikategorikan ke dalam folder Unknown.
+
+```
+void *pindahf(void* arg){ //sebagai jembatan untuk membuat thread
+  char* asal = (char*) arg;
+  printf("asal = %s\n", asal);
+  pindahFile(asal);
+  pthread_exit(0);
+}
+```
+Ini adalah fungsi untuk menjembatani pembuatan thread.
+
+```
+void sortHere(char *asal){
+  // strcpy(cwd, asal);
+  DIR *dirp;
+  char files[240][240];
+    struct dirent *entry;
+    dirp = opendir(asal);
+    int index = 0;
+ 
+      while ((entry = readdir(dirp)) != NULL)
+      {
+        if(strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
+          continue;
+          
+        if(entry->d_type == DT_REG)
+        {
+          char namafile[105];
+          strcpy(namafile, entry->d_name);
+          
+          sprintf(files[index], "%s/%s", asal, entry->d_name);
+          index++;
+        }
+        else
+        {
+          printf("%s is a directory\n", entry->d_name);
+        }
+      }
+      closedir(dirp);
+  
+
+    
+    pthread_t threads[index]; 
+    for (int i = 0; i < index; i++)
+      pthread_create(&threads[i], NULL, pindahf, files[i]);
+
+    for (int i = 0; i < index; i++)
+      pthread_join(threads[i], NULL);
+}
+```
+Ini adalah fungsi untuk menjalankan perintah -f dan *
+
+```
+int main(int argc, char* argv[]) 
+{ 
+  getcwd(cwd, sizeof(cwd));
+  char asal[120];
+  strcpy(asal, cwd); 
+
+  if(strcmp(argv[1],"-f")==0)
+  {
+    pthread_t tid[1000]; //1000 thread
+    int index = 0;
+    for (int i = 2; i < argc; i++)
+    {
+ 
+      pthread_create(&tid[index], NULL, pindahf, argv[i]);
+      sleep(2);
+      index++;
+    }
+    for (int i = 0; i < index; i++) {
+        pthread_join(tid[i], NULL);
+    }
+  }
+  else if(strcmp(argv[1],"*")==0)
+  {
+  //  char asal[1000];
+  //  strcpy(asal, cwd);
+    sortHere(asal);
+  }
+  else if(strcmp(argv[1],"-d")==0){
+      char asal[1000];
+      strcpy(asal, argv[2]);
+  //    printf ("%s", asal);
+      sortHere(asal);
+
+  }
+  else
+  {
+      printf("Argumen yang dimasukkan salah\n");
+      return 0;
+  }
+  
+	return 0; 
+}
+```
+Pada fungsi `main`, dijalankan fungsi-fungsi yang telah dibuat sebelumnya untuk melakukan input -d, * , dan -f.
+
 ##### 4a
 Pada soal ini diminta untuk menampilkan hasil dari perkalian matriks, dengan ukuran matriks pertama 4x2 dan matriks kedua 2x5. Untuk hasil perkalian matriksnya akan berupa matriks berukuran 4x5. 
 
